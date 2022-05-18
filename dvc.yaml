@@ -1,0 +1,15 @@
+stages:
+  download_data:
+    cmd: Rscript R/build.R
+    deps:
+    - R/build.R
+    outs:
+    - data/ApprovedCompanionDiagnosticDevices.parquet
+    - data/NucleicAcidTestsHumanGenetics.parquet
+    - data/NucleicAcidTestsMicrobial.parquet
+    - data/drug_event/drug-event.parquet
+    - data/drug_label/drug-label.parquet
+    - data/drugs_fda/drug-drugsfda.parquet
+    - data/enforcement/drug-enforcement.parquet
+    - data/ndc/drug-ndc.parquet
+    - data/pharmacogenomic-biomarkers.parquet

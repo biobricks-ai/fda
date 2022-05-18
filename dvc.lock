@@ -1,0 +1,36 @@
+schema: '2.0'
+stages:
+  download_data:
+    cmd: Rscript R/build.R
+    deps:
+    - path: R/build.R
+      md5: b3016747f3de77b58729bf6d05fe1d9f
+      size: 4951
+    outs:
+    - path: data/ApprovedCompanionDiagnosticDevices.parquet
+      md5: 2ca86666197952ebc5115d0615a24a72
+      size: 12562
+    - path: data/NucleicAcidTestsHumanGenetics.parquet
+      md5: 0b5916302d85c59d6f13b635cd9f15e5
+      size: 9731
+    - path: data/NucleicAcidTestsMicrobial.parquet
+      md5: 364975beb9de3d54bd2a2c6be5c22595
+      size: 18420
+    - path: data/drug_event/drug-event.parquet
+      md5: ac5ac234f5ae19d66ce6a9c6a6215af0
+      size: 154918051
+    - path: data/drug_label/drug-label.parquet
+      md5: bb1d5ab782bdd172ccc9d0d604582809
+      size: 2282235402
+    - path: data/drugs_fda/drug-drugsfda.parquet
+      md5: 31664cfcdbfc035250a18b5298c527fb
+      size: 6964234
+    - path: data/enforcement/drug-enforcement.parquet
+      md5: 9245642b5779460344af2f0df0f0aecf
+      size: 3285231
+    - path: data/ndc/drug-ndc.parquet
+      md5: 6504438f28ad32fef4954a4efd95a559
+      size: 27862478
+    - path: data/pharmacogenomic-biomarkers.parquet
+      md5: dc6c15ef07fda6e85e4c8216fa56a242
+      size: 12093
