@@ -1,4 +1,5 @@
 
+<a href="https://github.com/biobricks-ai/fda/actions"><img src="https://github.com/biobricks-ai/fda/actions/workflows/bricktools-check.yaml/badge.svg?branch=main"/></a>
 ## Description
 
 ### Data Overview
