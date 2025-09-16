@@ -1,64 +1,54 @@
 #!/usr/bin/env bash
 
-## set up python conda env ( will need pip3 and conda installed )
-echo "conda create --force --no-default-packages -n fda_env -y;
-conda activate fda_env;
-pip3 install -r requirements.txt;" > commands.sh
+## set up uv venv; must have uv installed
+echo "#!/usr/bin/env bash
 
-mkdir -p data/drug_label;
-mkdir -p data/enforcement;
-mkdir -p data/ndc;
-mkdir -p data/drug_event;
-mkdir -p data/drugs_fda;
-mkdir -p cache/tmp
-mkdir -p cache/tmp/drug_label
-mkdir -p cache/tmp/drug_event
+source .venv/bin/activate;" > commands.sh
+
+echo "mkdir -p brick;
+mkdir -p cache/tmp/drug_label;
+mkdir -p cache/tmp/drug_event;" >> commands.sh
 
 ## Drug label data:
-for i in `cat DrugLabelFiles.txt`; do
+for i in $(cat list/DrugLabelFiles.txt); do
   echo "unzip -p cache/drug/label/$i | jq .results > cache/drug/label/${i}_rev.json;
-  rm cache/drug/label/$i;
-  python3 python/jsonTOParquet.py --input cache/drug/label/${i}_rev.json --output cache/tmp/drug_label/${i}_rev.parquet;
-  rm cache/drug/label/${i}_rev.json;
+  python3 python/jsonToParquet.py --input cache/drug/label/${i}_rev.json --output cache/tmp/drug_label/${i}_rev.parquet;
   sleep 3"
 done >> commands.sh
-echo "python3 python/combineParquetFiles.py --inputdir cache/tmp/drug_label/  --output data/drug_label/drug-label.parquet;" >> commands.sh
+echo "python3 python/combineParquetFiles.py --inputdir cache/tmp/drug_label/  --output brick/drug-label.parquet;" >> commands.sh
 
 ## Enforcement Drug data:
-for i in `cat EnfLabelFiles.txt`; do
+for i in $(cat list/EnfLabelFiles.txt); do
   echo "unzip -p cache/drug/enforcement/$i | jq .results > cache/drug/enforcement/${i}_rev.json;
-  rm cache/drug/enforcement/$i;
-  python3 python/jsonTOParquet.py --input cache/drug/enforcement/${i}_rev.json --output data/enforcement/${i}_rev.parquet;
-  rm cache/drug/enforcement/${i}_rev.json;
+  python3 python/jsonToParquet.py --input cache/drug/enforcement/${i}_rev.json --output brick/${i}_rev.parquet;
   "
 done >> commands.sh
 
 ## NDC data info
-for i in `cat NDCLabelFiles.txt`; do
+for i in $(cat list/NDCLabelFiles.txt); do
   echo "unzip -p cache/drug/ndc/$i | jq .results > cache/drug/ndc/${i}_rev.json;
-  rm cache/drug/ndc/$i;
-  python3 python/jsonTOParquet.py --input cache/drug/ndc/${i}_rev.json --output data/ndc/${i}_rev.parquet;
-  rm cache/drug/ndc/${i}_rev.json;
+  python3 python/jsonToParquet.py --input cache/drug/ndc/${i}_rev.json --output brick/${i}_rev.parquet;
   "
 done >> commands.sh
 
 ## Drug Event sample data:
-for i in `cat drugEventFiles.txt`; do
+for i in $(cat list/drugEventFiles.txt); do
   echo "unzip -p cache/drug/event/all_other/$i | jq .results > cache/drug/event/all_other/${i}_rev.json;
-  rm cache/drug/event/all_other/$i;
-  python3 python/jsonTOParquet.py --input cache/drug/event/all_other/${i}_rev.json --output cache/tmp/drug_event/${i}_rev.parquet;
-  rm cache/drug/event/all_other/${i}_rev.json;"
-done >> commands.sh
-echo "python3 python/combineParquetFiles.py --inputdir cache/tmp/drug_event/  --output data/drug_event/drug-event.parquet;" >> commands.sh
-
-## Drugs FDA sample data:
-for i in `cat FDADrugInfoFiles.txt`; do
-  echo "unzip -p cache/drug/drugsfda/$i | jq .results > cache/drug/drugsfda/${i}_rev.json;
-  rm cache/drug/drugsfda/$i;
-  python3 python/jsonTOParquet.py --input cache/drug/drugsfda/${i}_rev.json --output data/drugs_fda/${i}_rev.parquet;
-  rm cache/drug/drugsfda/${i}_rev.json;
+  python3 python/jsonToParquet.py --input cache/drug/event/all_other/${i}_rev.json --output cache/tmp/drug_event/${i}_rev.parquet;
   "
 done >> commands.sh
-echo "rm -r cache/tmp;" >> commands.sh
-echo "rm *Files.txt;" >> commands.sh
-echo "conda deactivate; conda env remove -n fda_env" >> commands.sh
+echo "python3 python/combineParquetFiles.py --inputdir cache/tmp/drug_event/  --output brick/drug-event.parquet;" >> commands.sh
+
+## Drugs FDA sample data:
+for i in $(cat list/FDADrugInfoFiles.txt); do
+  echo "unzip -p cache/drug/drugsfda/$i | jq .results > cache/drug/drugsfda/${i}_rev.json;
+  python3 python/jsonToParquet.py --input cache/drug/drugsfda/${i}_rev.json --output brick/${i}_rev.parquet;
+  "
+done >> commands.sh
+echo "cp README.md brick/README.md;" >> commands.sh
+echo "cp data/* brick;" >> commands.sh
+echo "mv brick/drug-enforcement-0001-of-0001.json.zip_rev.parquet brick/drug-enforcement.parquet;" >> commands.sh
+echo "mv brick/drug-ndc-0001-of-0001.json.zip_rev.parquet brick/drug-ndc.parquet;" >> commands.sh
+echo "mv brick/drug-drugsfda-0001-of-0001.json.zip_rev.parquet brick/drug-drugsfda.parquet;" >> commands.sh
+
+chmod +x commands.sh;
