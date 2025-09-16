@@ -1,4 +1,3 @@
-remotes::install_github("rstudio/chromote")
 library(chromote)
 # code adapated from https://github.com/rundel/hayalbaz
 # MIT license: https://github.com/rundel/hayalbaz/commit/f68be8df82fb98ee0141c1fee799e1d9a3da947f#diff-9cc358405149db607ff830a16f0b4b21f7366e3c99ec00d52800acebe21b231cR11
