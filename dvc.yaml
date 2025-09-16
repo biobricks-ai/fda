@@ -1,25 +1,29 @@
 stages:
   download:
-    cmd: Rscript R/build.R
+    cmd: Rscript stages/build.R
     deps:
-    - R/build.R
-    - R/chrome.R
+    - stages/build.R
+    - stages/chrome.R
     outs:
     - cache/drug
     - list
     - data
   make_script:
-    cmd: ./conversionJsonParquet.sh
+    cmd: ./stages/conversionJsonParquet.sh
     deps:
     - list
-    - conversionJsonParquet.sh
+    - stages/conversionJsonParquet.sh
     outs:
-    - commands.sh
+    - stages/commands.sh
   execute:
-    cmd: ./commands.sh
+    cmd: ./stages/commands.sh
     deps:
-    - commands.sh
+    - stages/commands.sh
     - cache/drug
     outs:
     - brick
     - cache/tmp
+  docs:
+    cmd: ./stages/download_docs.sh
+    outs:
+    - docs/reference

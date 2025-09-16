@@ -1,13 +1,13 @@
 schema: '2.0'
 stages:
   download:
-    cmd: Rscript R/build.R
+    cmd: Rscript stages/build.R
     deps:
-    - path: R/build.R
+    - path: stages/build.R
       hash: md5
-      md5: 94da88f47199ca8400fd926b2513de24
-      size: 4503
-    - path: R/chrome.R
+      md5: d4ad8355125ffde32f225229137fae27
+      size: 4410
+    - path: stages/chrome.R
       hash: md5
       md5: b650227476f39ab25522bd42db82a155
       size: 2636
@@ -24,39 +24,39 @@ stages:
       nfiles: 4
     - path: list
       hash: md5
-      md5: fc0685f3fab21d1bd27d5bf626f8845b.dir
-      size: 2363
-      nfiles: 6
+      md5: b67986ff566fdd648de54f502993da60.dir
+      size: 667
+      nfiles: 5
   make_script:
-    cmd: ./conversionJsonParquet.sh
+    cmd: ./stages/conversionJsonParquet.sh
     deps:
-    - path: conversionJsonParquet.sh
-      hash: md5
-      md5: 99f7d6a6b6647473a16daf33df8bfb75
-      size: 2428
-      isexec: true
     - path: list
       hash: md5
-      md5: fc0685f3fab21d1bd27d5bf626f8845b.dir
-      size: 2363
-      nfiles: 6
-    outs:
-    - path: commands.sh
+      md5: b67986ff566fdd648de54f502993da60.dir
+      size: 667
+      nfiles: 5
+    - path: stages/conversionJsonParquet.sh
       hash: md5
-      md5: c192cf00f44854333a356af7bd864ec9
+      md5: 6ce62cf2afdeafa50eefac18110c8914
+      size: 2533
+      isexec: true
+    outs:
+    - path: stages/commands.sh
+      hash: md5
+      md5: 354889a299af28b697761461acdc3b77
       size: 7156
       isexec: true
   execute:
-    cmd: ./commands.sh
+    cmd: ./stages/commands.sh
     deps:
     - path: cache/drug
       hash: md5
       md5: b28fcc9471277d0a63e466059818a61a.dir
       size: 11406859354
       nfiles: 41
-    - path: commands.sh
+    - path: stages/commands.sh
       hash: md5
-      md5: c192cf00f44854333a356af7bd864ec9
+      md5: 354889a299af28b697761461acdc3b77
       size: 7156
       isexec: true
     outs:
@@ -70,3 +70,11 @@ stages:
       md5: 7ad09b537e150c8aaaa4c5e601df90c6.dir
       size: 2898335483
       nfiles: 17
+  docs:
+    cmd: ./stages/download_docs.sh
+    outs:
+    - path: docs/reference
+      hash: md5
+      md5: 2d5b6a715fd6849ace9b6a48dae6494f.dir
+      size: 312865
+      nfiles: 5
