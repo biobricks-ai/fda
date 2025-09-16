@@ -35,8 +35,10 @@ download_file <- function(dest_dir='',url='') {
 
 cache_dir <- "cache"
 data_dir <- "data"
+list_dir <- "list"
 mkdir(cache_dir)
 mkdir(data_dir)
+mkdir(list_dir)
 download_url <- "https://open.fda.gov/data/downloads/"
 
 
@@ -121,22 +123,9 @@ urlAllList|>
     download_file(dest_dir = download_dir,url)
   })
 
-write.table(list.files('cache/drug/label'),"DrugLabelFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-write.table(list.files('cache/drug/enforcement'),"EnfLabelFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-write.table(list.files('cache/drug/ndc'),"NDCLabelFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-write.table(list.files('cache/drug/event/all_other/'),"drugEventFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-write.table(list.files('cache/drug/drugsfda'),"FDADrugInfoFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-
-system('./conversionJsonParquet.sh')
-system('chmod +x commands.sh; ./commands.sh')
-
-print("copying over unprocessed files")
-c("README.md") |>
-  map(function(filename) {
-    file.copy(file.path(filename),
-    file.path(data_dir,filename))})
-
-## Rename parquet file: enforcement
-system("mv data/enforcement/drug-enforcement-0001-of-0001.json.zip_rev.parquet data/enforcement/drug-enforcement.parquet")
-system("mv data/ndc/drug-ndc-0001-of-0001.json.zip_rev.parquet data/ndc/drug-ndc.parquet")
-system("mv data/drugs_fda/drug-drugsfda-0001-of-0001.json.zip_rev.parquet data/drugs_fda/drug-drugsfda.parquet")
+write.table(urlAllList, "list/AllFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+write.table(list.files('cache/drug/label'),"list/DrugLabelFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+write.table(list.files('cache/drug/enforcement'),"list/EnfLabelFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+write.table(list.files('cache/drug/ndc'),"list/NDCLabelFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+write.table(list.files('cache/drug/event/all_other/'),"list/drugEventFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+write.table(list.files('cache/drug/drugsfda'),"list/FDADrugInfoFiles.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
