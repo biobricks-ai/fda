@@ -27,8 +27,6 @@
             rPackages.htmlTable
             rPackages.remotes
             rPackages.chromote
-            pkgs.python313Packages.conda
-            pkgs.dvc
           ];
         };
       });
