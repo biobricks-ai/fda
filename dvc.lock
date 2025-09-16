@@ -1,36 +1,72 @@
 schema: '2.0'
 stages:
-  download_data:
+  download:
     cmd: Rscript R/build.R
     deps:
     - path: R/build.R
-      md5: b3016747f3de77b58729bf6d05fe1d9f
-      size: 4951
+      hash: md5
+      md5: 94da88f47199ca8400fd926b2513de24
+      size: 4503
+    - path: R/chrome.R
+      hash: md5
+      md5: b650227476f39ab25522bd42db82a155
+      size: 2636
     outs:
-    - path: data/ApprovedCompanionDiagnosticDevices.parquet
-      md5: 2ca86666197952ebc5115d0615a24a72
-      size: 12562
-    - path: data/NucleicAcidTestsHumanGenetics.parquet
-      md5: 0b5916302d85c59d6f13b635cd9f15e5
-      size: 9731
-    - path: data/NucleicAcidTestsMicrobial.parquet
-      md5: 364975beb9de3d54bd2a2c6be5c22595
-      size: 18420
-    - path: data/drug_event/drug-event.parquet
-      md5: ac5ac234f5ae19d66ce6a9c6a6215af0
-      size: 154918051
-    - path: data/drug_label/drug-label.parquet
-      md5: bb1d5ab782bdd172ccc9d0d604582809
-      size: 2282235402
-    - path: data/drugs_fda/drug-drugsfda.parquet
-      md5: 31664cfcdbfc035250a18b5298c527fb
-      size: 6964234
-    - path: data/enforcement/drug-enforcement.parquet
-      md5: 9245642b5779460344af2f0df0f0aecf
-      size: 3285231
-    - path: data/ndc/drug-ndc.parquet
-      md5: 6504438f28ad32fef4954a4efd95a559
-      size: 27862478
-    - path: data/pharmacogenomic-biomarkers.parquet
-      md5: dc6c15ef07fda6e85e4c8216fa56a242
-      size: 12093
+    - path: cache/drug
+      hash: md5
+      md5: 96f9c68a8a40d8bc1a933616379e449d.dir
+      size: 1991862540
+      nfiles: 21
+    - path: data
+      hash: md5
+      md5: be016de140b9a5d844b4f1ee6ce7c4e3.dir
+      size: 48325
+      nfiles: 4
+    - path: list
+      hash: md5
+      md5: fc0685f3fab21d1bd27d5bf626f8845b.dir
+      size: 2363
+      nfiles: 6
+  make_script:
+    cmd: ./conversionJsonParquet.sh
+    deps:
+    - path: conversionJsonParquet.sh
+      hash: md5
+      md5: 99f7d6a6b6647473a16daf33df8bfb75
+      size: 2428
+      isexec: true
+    - path: list
+      hash: md5
+      md5: fc0685f3fab21d1bd27d5bf626f8845b.dir
+      size: 2363
+      nfiles: 6
+    outs:
+    - path: commands.sh
+      hash: md5
+      md5: c192cf00f44854333a356af7bd864ec9
+      size: 7156
+      isexec: true
+  execute:
+    cmd: ./commands.sh
+    deps:
+    - path: cache/drug
+      hash: md5
+      md5: b28fcc9471277d0a63e466059818a61a.dir
+      size: 11406859354
+      nfiles: 41
+    - path: commands.sh
+      hash: md5
+      md5: c192cf00f44854333a356af7bd864ec9
+      size: 7156
+      isexec: true
+    outs:
+    - path: brick
+      hash: md5
+      md5: 71d612447a23f7505dc84bc77e2e338f.dir
+      size: 3010230636
+      nfiles: 10
+    - path: cache/tmp
+      hash: md5
+      md5: 7ad09b537e150c8aaaa4c5e601df90c6.dir
+      size: 2898335483
+      nfiles: 17
